@@ -4,10 +4,9 @@ require 'pp'
 
 # ML Api
 module DbPopulate
-  # authentication service class
+  # faz o update da base de dado de acordo com a API do ML
   class UpdateItemsTableService < ApplicationService
     def call
-      puts 'entrei aqui'
       all_sellers
     end
 
@@ -15,25 +14,35 @@ module DbPopulate
       Seller.all.each do |seller|
         items_ids = ApiMercadoLivre::AllSellerItemsService.call(seller)
         all_items_raw = ApiMercadoLivre::ItemMultigetDataService.call(items_ids, seller)
-        all_items_raw.each do |item|
-          puts 'estou aquiiii'
-          populate_db(item, seller)
-          puts 'estou aqui'
+        all_items_raw.each do |parsed_item|
+          populate_db(parsed_item, seller)
         end
       end
     end
 
-    def populate_db(item, seller)
-      seller.items.create(
-        ml_item_id: item['body']['id'],
-        title: item['body']['title'],
-        price: item['body']['price'],
-        base_price: item['body']['base_price'],
-        available_quantity: item['body']['available_quantity'],
-        sold_quantity: item['body']['sold_quantity'],
-        logistic_type: item['body']['shipping']['logistic_type']
-      )
+    def populate_db(parsed_item, seller)
+      attributes = item_attributes(parsed_item)
+      begin
+        item = Item.find(attributes[:ml_item_id])
+        item.update(attributes)
+        updates_hash = item.previous_changes
+        DbPopulate::UpdateEventTrackService.call(item, updates_hash) unless item.previous_changes.empty?
+      rescue ActiveRecord::RecordNotFound
+        seller.items.create(attributes)
+        nil
+      end
+    end
+
+    def item_attributes(parsed_item)
+      {
+        ml_item_id: parsed_item['body']['id'],
+        title: parsed_item['body']['title'],
+        price: parsed_item['body']['price'],
+        base_price: parsed_item['body']['base_price'],
+        available_quantity: parsed_item['body']['available_quantity'],
+        sold_quantity: parsed_item['body']['sold_quantity'],
+        logistic_type: parsed_item['body']['shipping']['logistic_type']
+      }
     end
   end
 end
-

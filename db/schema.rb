@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_07_194625) do
+ActiveRecord::Schema.define(version: 2022_06_15_135445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,26 @@ ActiveRecord::Schema.define(version: 2022_06_07_194625) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "seller_id"
     t.index ["seller_id"], name: "index_items_on_seller_id"
+  end
+
+  create_table "logistic_events", force: :cascade do |t|
+    t.string "new_logistic"
+    t.string "old_logistic"
+    t.datetime "change_time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "item_id"
+    t.index ["item_id"], name: "index_logistic_events_on_item_id"
+  end
+
+  create_table "price_events", force: :cascade do |t|
+    t.float "new_price"
+    t.float "old_price"
+    t.datetime "change_time"
+    t.bigint "item_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_price_events_on_item_id"
   end
 
   create_table "sellers", primary_key: "ml_seller_id", id: :string, force: :cascade do |t|

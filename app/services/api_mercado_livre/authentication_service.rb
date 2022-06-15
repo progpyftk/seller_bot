@@ -35,7 +35,7 @@ module ApiMercadoLivre
         'grant_type' => 'authorization_code',
         'client_id' => ENV['ML_API_CLIENT_ID'],
         'client_secret' => ENV['ML_API_CLIENT_SECRET'],
-        'code' => 'TG-62a2beaf9c9c7a00133c1a97-140329822',
+        'code' => 'TG-62aa31df3f56e00015b21e26-140329822',
         'redirect_uri' => 'https://localhost:3000'
       }.to_json
       save_tokens(RestClient.post(url, payload, headers))
