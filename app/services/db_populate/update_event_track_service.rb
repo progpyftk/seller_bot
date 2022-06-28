@@ -25,16 +25,14 @@ module DbPopulate
     end
 
     def update_events
-      # checa as keys do hash
       puts "---- def update_events ----"
-      pp @update_events
       update_logistics_events if @updates_hash.key?(:logistic_type)
       update_price_events if @updates_hash.key?(:price)
     end
 
     def update_logistics_events
-      previous_value = @updates_hash[:logistic_events][0]
-      new_value = @updates_hash[:logistic_events][1]
+      previous_value = @updates_hash[:logistic_type][0]
+      new_value = @updates_hash[:logistic_type][1]
       updated_at = @updates_hash[:updated_at][0]
       puts 'Entrei no update logistics'
       puts previous_value

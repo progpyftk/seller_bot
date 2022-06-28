@@ -34,18 +34,16 @@ ActiveRecord::Schema.define(version: 2022_06_15_135445) do
     t.datetime "change_time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "item_id"
-    t.index ["item_id"], name: "index_logistic_events_on_item_id"
+    t.string "item_id"
   end
 
   create_table "price_events", force: :cascade do |t|
     t.float "new_price"
     t.float "old_price"
     t.datetime "change_time"
-    t.bigint "item_id"
+    t.string "item_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["item_id"], name: "index_price_events_on_item_id"
   end
 
   create_table "sellers", primary_key: "ml_seller_id", id: :string, force: :cascade do |t|
@@ -57,4 +55,6 @@ ActiveRecord::Schema.define(version: 2022_06_15_135445) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "logistic_events", "items", primary_key: "ml_item_id"
+  add_foreign_key "price_events", "items", primary_key: "ml_item_id"
 end

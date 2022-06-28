@@ -35,7 +35,7 @@ module ApiMercadoLivre
         'grant_type' => 'authorization_code',
         'client_id' => ENV['ML_API_CLIENT_ID'],
         'client_secret' => ENV['ML_API_CLIENT_SECRET'],
-        'code' => 'TG-62aa31df3f56e00015b21e26-140329822',
+        'code' => 'TG-62b26c8540fd480012a19bdc-140329822',
         'redirect_uri' => 'https://localhost:3000'
       }.to_json
       save_tokens(RestClient.post(url, payload, headers))
@@ -55,6 +55,7 @@ module ApiMercadoLivre
 
     def save_tokens(response)
       parsed_response = JSON.parse(response)
+      pp parsed_response
       @seller.access_token = parsed_response['access_token']
       @seller.refresh_token = parsed_response['refresh_token']
       @seller.save
